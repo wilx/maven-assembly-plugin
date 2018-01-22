@@ -25,12 +25,10 @@ import org.apache.maven.plugins.assembly.AssemblerConfigurationSource;
 import org.apache.maven.plugins.assembly.format.AssemblyFormattingException;
 import org.apache.maven.plugins.assembly.model.Assembly;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.shared.utils.Os;
 import org.codehaus.plexus.interpolation.fixed.FixedStringSearchInterpolator;
 import org.codehaus.plexus.interpolation.fixed.PrefixedObjectValueSource;
 import org.codehaus.plexus.interpolation.fixed.PrefixedPropertiesValueSource;
 import org.codehaus.plexus.interpolation.fixed.PropertiesBasedValueSource;
-import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
 
 import javax.annotation.Nonnull;
@@ -474,39 +472,6 @@ public final class AssemblyFormatUtils
         value = fixRelativeRefs( value );
 
         return value;
-    }
-
-    public static void warnForPlatformSpecifics( Logger logger, String destDirectory )
-    {
-        if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
-        {
-            if ( isUnixRootReference( destDirectory ) )
-            {
-                logger.error( "OS=Windows and the assembly descriptor contains a *nix-specific root-relative reference"
-                                  + " (starting with slash): " + destDirectory );
-            }
-            else if ( isWindowsPath( destDirectory ) )
-            {
-                logger.warn( "The assembly descriptor contains a Windows-specific directory reference"
-                                 + " (with a drive letter). This is not portable and will fail on non-Windows: "
-                                 + destDirectory );
-            }
-        }
-        else
-        {
-            if ( isWindowsPath( destDirectory ) )
-            {
-                logger.error(
-                    "OS=Non-Windows and the assembly descriptor contains a Windows-specific directory reference"
-                        + " (with a drive letter): " + destDirectory );
-            }
-            else if ( isUnixRootReference( destDirectory ) )
-            {
-                logger.warn( "The assembly descriptor contains a *nix-specific root-relative reference"
-                                 + " (starting with slash). This is not portable and might fail on Windows: "
-                                 + destDirectory );
-            }
-        }
     }
 
     static boolean isWindowsPath( String destDirectory )
